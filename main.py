@@ -3,6 +3,52 @@ import ttkbootstrap as ttk
 import requests
 import json
 import os
+import winreg
+import vdf
+
+#Check if Fortify is installed
+
+def FortifyCheck():
+
+    print("Checking if Fortify is installed")
+    # Opening steam registry
+    
+    steam_reg = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"SOFTWARE\Valve\Steam")
+
+    # Getting steam install path
+    steam_path = winreg.QueryValueEx(steam_reg, "SteamPath")[0]
+
+    # Libraryfolders.vdf contains your steam games install path
+    # Accessing libraryfolders.vdf
+    full_path = os.path.join(steam_path, "steamapps/libraryfolders.vdf")
+
+    #Using vdf library to acess vdf file as dictionary
+    libfolders = vdf.load(open(f"{full_path}"))["libraryfolders"]
+
+    # Checking if fortify is installed
+
+    fortify_location = None
+    for x in libfolders:
+        if "505040" in libfolders[str(x)]["apps"]:
+            print(fr"Found Fortify install in {libfolders[str(x)]["path"]}")
+            fortify_location = libfolders[str(x)]["path"]
+
+    if fortify_location is not None:
+        save_path = os.path.join(fortify_location, r"steamapps\common\FORTIFY\Fortify_Data\Saves")
+        return save_path
+           
+    else: print("Fortify install not found")
+
+
+# Save the json file to fortify directory
+def CreateFile(BaseJson, filename):
+    full_path = os.path.join(FortifyCheck(), f"{filename}.json")
+    with open(full_path, 'w') as f:
+        json_string=json.dumps(BaseJson)
+        f.write(json_string)
+    print("Successfully created save file")
+
+
 
 # Downloading json from builderssanctuary
 
@@ -24,15 +70,6 @@ def SancDownload():
     else:
         print("Got no response from builderssanctuary.com")
         return "404"
-
-
-# Save the json file to fortify directory
-def CreateFile(BaseJson, filename):
-    dir = "D:\SteamLibrary\steamapps\common\FORTIFY\Fortify_Data\Saves"
-    full_path = os.path.join(dir, f"{filename}.json")
-    with open(full_path, 'w') as f:
-        json_string=json.dumps(BaseJson)
-        f.write(json_string)
 
 
 # window
