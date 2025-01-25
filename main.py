@@ -74,8 +74,8 @@ def SancDownload():
 
 # window
 window = ttk.Window(themename = 'cyborg')
-window.title('Fortify Downloader')
-window.geometry('300x200')
+window.title("Lauge's sanc downloader")
+window.geometry('350x200')
 
 
 frame = ttk.Frame()
@@ -85,7 +85,7 @@ NameStr = tk.StringVar()
 
 #Creating the widgets
 
-title_label = tk.Label(frame, text="Sanctuary downloader", font=(16))
+title_label = tk.Label(frame, text="Sanc to Fortify downloader", font=(16))
 code_label = tk.Label(frame, text="Sanc code")
 code_entry = tk.Entry(frame, textvariable = SancCodeStr)
 name_label = tk.Label(frame, text="File name")
